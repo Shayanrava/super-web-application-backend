@@ -13,7 +13,5 @@ app.use(fileUpload());
 app.use(express.static("public"));
 app.use(router)
 
-
-
-app.listen(12793 , console.log("server is running"));
+app.listen(12793, () => console.log("Server is running on port 12793"));
 

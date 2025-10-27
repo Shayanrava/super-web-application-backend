@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize";
+import db from "../config/DB.js"
 
 const db = new Sequelize(
   process.env.MYSQL_DATABASE,
