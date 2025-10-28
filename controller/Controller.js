@@ -1,4 +1,4 @@
-import Users from "../models/Models.js"
+import Users from "../models/ModelUser.js"
 import path from "path";
 import { cp } from 'fs';
 import { error } from "console";
