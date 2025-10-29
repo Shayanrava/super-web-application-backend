@@ -1,10 +1,5 @@
 import Users from "../models/ModelUser.js"
-import path from "path";
-import { cp } from 'fs';
-import { error } from "console";
 
-
-// const PUBLIC_DOMAIN = "image-uploader-backend-production-10f3.up.railway.app";
 
 export const getUsers = async (req, res) => {
     try {
@@ -117,3 +112,4 @@ export const deleteUser = async (req, res) => {
         res.json({ msgd: error.message });;
     }
 }
+
