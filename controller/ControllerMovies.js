@@ -1,4 +1,4 @@
-import Movie from "../models/ModelMovie.js";
+import Movie from "../models/MovieModel.js";
 import path from "path";
 import fs from 'fs';
 
