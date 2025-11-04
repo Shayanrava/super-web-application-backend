@@ -7,7 +7,7 @@ const { DataTypes } = Sequelize;
 // mysql -h mainline.proxy.rlwy.net -u root -p --port 30127 --protocol=TCP railway
 // ViRUVsEhTYvRcmJtndwLmfwrGJjsFaBU
 
-const Showtime = db.define("showtime", {
+const Showtime = db.define("showtimes", {
     date: {
         type: DataTypes.DATEONLY,
         allowNull: false
