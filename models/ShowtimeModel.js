@@ -4,6 +4,9 @@ import Movie from "./MovieModel.js";
 
 const { DataTypes } = Sequelize;
 
+// mysql -h mainline.proxy.rlwy.net -u root -p --port 30127 --protocol=TCP railway
+// ViRUVsEhTYvRcmJtndwLmfwrGJjsFaBU
+
 const Showtime = db.define("showtime", {
     date: {
         type: DataTypes.DATEONLY,
@@ -25,7 +28,7 @@ const Showtime = db.define("showtime", {
             key: "id"
         }
     },
-    availableSeats: {
+    available_seats: {
         type: DataTypes.INTEGER,
         defaultValue: 40
     },
