@@ -3,6 +3,7 @@ import Showtime from "../models/ShowtimeModel.js";
 
 export const getShowTimes = async (req, res) => {
     try {
+        console.log("evrything is ok");
         const response = await Showtime.findAll();
         res.json(response);
     } catch (error) {
