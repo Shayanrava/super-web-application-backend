@@ -25,7 +25,7 @@ const Showtime = db.define("showtime", {
             key: "id"
         }
     },
-    available_seats: {
+    availableSeats: {
         type: DataTypes.INTEGER,
         defaultValue: 40
     },
