@@ -137,7 +137,7 @@ export const setSeat = async (req, res) => {
     const start_time = response.start_time;
     const end_time = response.end_time;
     const price = response.price;
-    const number = response.available_seats - req.params.id;
+    const number = response.available_seats - 1;
 
     try {
         await Showtime.update({ movie_id: movie_id, date: date, start_time: start_time, end_time: end_time, available_seats: number, price: price }, {
