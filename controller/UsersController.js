@@ -26,15 +26,17 @@ export const singleUser = async (req, res) => {
 
 export const saveUser = async (req, res) => {
     if (!req.body.name) return res.json({ msg: "Name is required." });
+    if (!req.body.password) return res.json({ msg: "Password is required." });
     if (!req.body.age) return res.json({ msg: "Age is required." });
     if (!req.body.nationality) return res.json({ msg: "Nationality is required." });
 
     const name = req.body.name;
+    const password = req.body.password;
     const age = req.body.age;
     const nationality = req.body.nationality;
     const url = req.body.url;
     try {
-        await Users.create({ name: name, age: age, nationality: nationality, url: url });
+        await Users.create({ name: name, age: age, nationality: nationality, url: url, password: password });
         res.json({ msg: "The user was added successfully." });
     } catch (err) {
         res.json({ msg: err.message })
@@ -51,6 +53,7 @@ export const updateUser = async (req, res) => {
     if (!user) return res.json({ msg: "The user was not found." });
 
     let name = ""
+    let password = ""
     let age = ""
     let nationality = ""
     let url = ""
@@ -59,6 +62,12 @@ export const updateUser = async (req, res) => {
         name = user.name
     } else {
         name = req.body.name;
+    }
+
+    if (req.body.password == "") {
+        password = user.password
+    } else {
+        password = req.body.password;
     }
 
     if (req.body.age == "") {
@@ -80,7 +89,7 @@ export const updateUser = async (req, res) => {
     }
 
     try {
-        await Users.update({ name: name, age: age, nationality: nationality, url: url }, {
+        await Users.update({ name: name, age: age, nationality: nationality, url: url, password: password }, {
             where: {
                 id: req.params.id
             }

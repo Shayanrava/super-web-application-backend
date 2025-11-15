@@ -8,6 +8,7 @@ const Users = db.define("users", {
     age: DataTypes.STRING,
     nationality: DataTypes.STRING,
     url: DataTypes.STRING,
+    password: DataTypes.STRING
 }, {
     freezeTableName: true,
     timestamps: false
