@@ -8,7 +8,6 @@ const db = new Sequelize(
     host: process.env.MYSQLHOST,
     port: process.env.MYSQLPORT,
     dialect: "mysql",
-    timezone: '+03:30'
   }
 );
 export default db;
