@@ -67,19 +67,21 @@ export const deleteMovie = async (req, res) => {
     if (!response) return res.json({ msg: "The movie was not found." });
 
     try {
-        const filePath = path.join('./public/images', path.basename(response.imageUrl));
-
-        fs.unlinkSync(filePath);
-
-        await Movie.destroy({
+        const deletedCount = await Movie.destroy({
             where: {
                 id: req.params.id
             }
         });
-        res.json({ msg: "The product was delete successfully ." });
-
+        if (!(deletedCount > 0)) {
+            return res.json({ msg: "Failed to delete the movie." });
+        }
+        const filePath = path.join('./public/images', path.basename(response.imageUrl));
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
+        res.json({ msg: "The product was deleted successfully ." });
     } catch (error) {
-        res.json({ msgd: error.message });;
+        res.json({ msg: error.message });;
     }
 }
 
