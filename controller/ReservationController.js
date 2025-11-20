@@ -28,7 +28,7 @@ export const singleReserve = async (req, res) => {
 
 export const getShowtimeReserve = async (req, res) => {
     try {
-        const response = await Reservation.findOne({
+        const response = await Reservation.findAll({
             where: {
                 showtime_id: req.params.id
             }
