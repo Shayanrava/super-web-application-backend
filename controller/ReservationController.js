@@ -26,6 +26,20 @@ export const singleReserve = async (req, res) => {
     }
 }
 
+export const getShowtimeReserve = async (req, res) => {
+    try {
+        const response = await Reservation.findOne({
+            where: {
+                showtime_id: req.params.id
+            }
+        });
+        res.json(response);
+    } catch (error) {
+        res.json({ msg: error.message })
+    }
+
+}
+
 export const saveReserve = async (req, res) => {
     if (!req.body.user_id) return res.json({ msg: "User ID is required." });
     if (!req.body.showtime_id) return res.json({ msg: "Showtime ID is required." });
@@ -58,13 +72,13 @@ export const updateReserve = async (req, res) => {
     let seat_number = "";
     let booking_time = "";
 
-    if (!req.body.user_id ) {
+    if (!req.body.user_id) {
         user_id = reserve.user_id
     } else {
-         user_id = req.body.user_id;
+        user_id = req.body.user_id;
     }
 
-    if (!req.body.showtime_id ) {
+    if (!req.body.showtime_id) {
         showtime_id = reserve.showtime_id
     } else {
         showtime_id = req.body.showtime_id;
@@ -76,7 +90,7 @@ export const updateReserve = async (req, res) => {
         seat_number = req.body.seat_number;
     }
 
-    if (!req.body.booking_time ) {
+    if (!req.body.booking_time) {
         booking_time = reserve.booking_time
     } else {
         booking_time = req.body.booking_time;
@@ -116,3 +130,4 @@ export const deleteReserve = async (req, res) => {
     }
 }
 
+//  نیاز هست که یه تابع برای رای گیری هم اضافه شه که اول چک کنه کاربر خرید کرده و سپس در جدول فیلم ذخیره شه و همچنین برای اپدیت هم برای گذاشته شه و بعد پایان فیلم حتما
