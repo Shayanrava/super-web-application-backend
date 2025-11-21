@@ -1,5 +1,5 @@
 import express from "express";
-import { getUsers, singleUser, saveUser, updateUser, deleteUser } from "../controller/UsersController.js";
+import { getUsers, singleUser, saveUser, updateUser, deleteUser, getIdUser } from "../controller/UsersController.js";
 import { deleteMovie, getMovies, saveMovie, setVote, singleMovie, updateMovie } from "../controller/MoviesController.js";
 import { deleteShowTime, getShowTimes, getSingleShowTime, saveShowTime, setSeat, updateShowTime } from "../controller/ShowtimeController.js";
 import { deleteReserve, getReserve, getShowtimeReserve, saveReserve, updateReserve } from "../controller/ReservationController.js";
@@ -10,6 +10,7 @@ const router = express.Router()
 
 router.get("/users", getUsers) // http://localhost:12793/users , https://super-web-application-backend-production.up.railway.app/users
 router.get("/users/:id", singleUser)
+router.get("/users/:id/:password", getIdUser)
 router.post("/users", saveUser)
 router.put("/users/:id", updateUser)
 router.delete("/users/:id", deleteUser)

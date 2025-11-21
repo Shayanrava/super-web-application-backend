@@ -21,6 +21,23 @@ export const singleUser = async (req, res) => {
         res.json(response);
     } catch (error) {
         res.json({ msg: error.message })
+        
+    }
+}
+
+export const getIdUser = async (req, res) => {
+
+    try {
+        const response = await Users.findOne({
+            attributes: ['id'],
+            where: {
+                id: req.params.id,
+                password: req.params.password
+            }
+        });
+        res.json(response);
+    } catch (error) {
+        res.json({ msg: error.message })
     }
 }
 
@@ -35,6 +52,7 @@ export const saveUser = async (req, res) => {
     const age = req.body.age;
     const nationality = req.body.nationality;
     const url = req.body.url;
+
     try {
         await Users.create({ name: name, age: age, nationality: nationality, url: url, password: password });
         res.json({ msg: "The user was added successfully." });
