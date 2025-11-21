@@ -139,7 +139,10 @@ export const updateMovie = async (req, res) => {
         // imageUrl = `http://localhost:12793/images/${fileName}`;
         imageUrl = `https://${PUBLIC_DOMAIN}/images/${fileName}`;
         if (fileSize > 5000000) return res.json({ msg: "The image size is larger than 5 MB." });
-        fs.unlinkSync(`./public/images/${path.basename(movie.imageUrl)}`);
+        const filePath = `./public/images/${path.basename(movie.imageUrl)}`
+        if (fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+        }
         await file.mv(`./public/images/${fileName}`);
     }
     try {
