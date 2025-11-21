@@ -31,8 +31,8 @@ export const getIdUser = async (req, res) => {
         const response = await Users.findOne({
             attributes: ['id'],
             where: {
-                id: req.params.id,
-                password: req.params.password
+                name: req.body.name,
+                password: req.body.password
             }
         });
         res.json(response);

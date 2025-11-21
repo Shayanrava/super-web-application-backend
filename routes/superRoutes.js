@@ -10,8 +10,8 @@ const router = express.Router()
 
 router.get("/users", getUsers) // http://localhost:12793/users , https://super-web-application-backend-production.up.railway.app/users
 router.get("/users/:id", singleUser)
-router.get("/users/:id/:password", getIdUser)
 router.post("/users", saveUser)
+router.post("/userID", getIdUser)
 router.put("/users/:id", updateUser)
 router.delete("/users/:id", deleteUser)
 
