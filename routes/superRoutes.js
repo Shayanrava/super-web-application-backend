@@ -1,7 +1,7 @@
 import express from "express";
 import { getUsers, singleUser, saveUser, updateUser, deleteUser, getIdUser } from "../controller/UsersController.js";
 import { deleteMovie, getMovies, saveMovie, setVote, singleMovie, updateMovie } from "../controller/MoviesController.js";
-import { deleteShowTime, getShowTimes, getSingleShowTime, saveShowTime, setSeat, updateShowTime } from "../controller/ShowtimeController.js";
+import { deleteShowTime, getShowTimes, getSingleShowTime, getUsersShowtimes, saveShowTime, setSeat, updateShowTime } from "../controller/ShowtimeController.js";
 import { deleteReserve, getReserve, getShowtimeReserve, saveReserve, updateReserve } from "../controller/ReservationController.js";
 
 
@@ -21,6 +21,8 @@ router.post("/movies", saveMovie)
 router.delete("/movies/:id", deleteMovie)
 router.put("/movies/:id", updateMovie)
 router.put("/movies/vote/:id", setVote)
+
+router.get("users-showtimes" , getUsersShowtimes)
 
 router.get("/showtimes" , getShowTimes)
 router.get("/showtimes/:id", getSingleShowTime)
