@@ -30,7 +30,7 @@ const Reservation = db.define("reservations", {
         type: DataTypes.DATE,
         allowNull: false
     },
-    vote: {
+    rate: {
         type: DataTypes.INTEGER,
         allowNull: true
 
