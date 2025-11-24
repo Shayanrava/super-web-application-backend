@@ -22,7 +22,7 @@ router.delete("/movies/:id", deleteMovie)
 router.put("/movies/:id", updateMovie)
 router.put("/movies/vote/:id", setVote)
 
-router.get("users-showtimes" , getUsersShowtimes)
+router.get("/users-showtimes" , getUsersShowtimes)
 
 router.get("/showtimes" , getShowTimes)
 router.get("/showtimes/:id", getSingleShowTime)
