@@ -1,6 +1,7 @@
 import Reservation from "../models/ReservationModel.js";
 import Showtime from "../models/ShowtimeModel.js";
 import Users from "../models/UserModel.js";
+import { Sequelize } from "sequelize";
 
 
 export const getShowTimes = async (req, res) => {
