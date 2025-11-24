@@ -1,4 +1,5 @@
 import Showtime from "../models/ShowtimeModel.js";
+import Users from "../models/UserModel.js";
 
 
 export const getShowTimes = async (req, res) => {
@@ -22,6 +23,24 @@ export const getSingleShowTime = async (req, res) => {
     } catch (error) {
         console.log(error);
     }
+}
+
+export const getUsersShowtimes = async (req, res) => {
+    try {
+        const response = await Users.findOne({
+            attributes: ['id'],
+            where: {
+                name: req.body.name,
+                password: req.body.password
+            }
+        });
+
+        console.log(response);
+
+    } catch (error) {
+
+    }
+
 }
 
 export const saveShowTime = async (req, res) => {
