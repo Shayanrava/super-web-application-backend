@@ -49,10 +49,10 @@ export const getUsersShowtimes = async (req, res) => {
                 user_id: responseUser.dataValues.id
             }
         })
-        console.log(responseReserve);
+        res.json(responseReserve)
 
     } catch (error) {
-        res.json({ msg: error.message })
+        res.status(500).json({ msg: error.message })
     }
 }
 
