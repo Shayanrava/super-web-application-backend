@@ -51,7 +51,7 @@ export const getUsersShowtimes = async (req, res) => {
         console.log(responseReserve);
 
     } catch (error) {
-        res.json({ msg: err.message })
+        res.json({ msg: error.message })
     }
 }
 
