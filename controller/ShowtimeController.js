@@ -49,7 +49,18 @@ export const getUsersShowtimes = async (req, res) => {
                 user_id: responseUser.dataValues.id
             }
         })
-        res.json(responseReserve)
+
+        const showtimeID = responseReserve.map(r => r.showtime_id);
+
+        const responseShowtime = await Showtime.findAll({
+            where: {
+                id: showtimeID
+            }
+        });
+
+        return res.json(responseShowtime);
+
+
 
     } catch (error) {
         res.status(500).json({ msg: error.message })
