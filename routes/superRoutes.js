@@ -2,7 +2,7 @@ import express from "express";
 import { getUsers, singleUser, saveUser, updateUser, deleteUser, getIdUser } from "../controller/UsersController.js";
 import { deleteMovie, getMovies, saveMovie, setVote, singleMovie, updateMovie } from "../controller/MoviesController.js";
 import { deleteShowTime, getShowTimes, getSingleShowTime, getUsersShowtimes, saveShowTime, setSeat, updateShowTime } from "../controller/ShowtimeController.js";
-import { deleteReserve, getReserve, getShowtimeReserve, saveReserve, updateReserve } from "../controller/ReservationController.js";
+import { deleteReserve, getReserve, getShowtimeReserve, saveReserve, updateReserve, updateVote } from "../controller/ReservationController.js";
 
 
 
@@ -34,6 +34,7 @@ router.put("/showtimes/seat/:id", setSeat)
 router.get("/reservation" , getReserve)
 router.get("/reservation/:id", getShowtimeReserve)
 router.post("/reservation" , saveReserve)
+router.post("/reservation/:showtime_id" , updateVote)
 router.put("/reservation/:id", updateReserve)
 router.delete("/reservation/:id", deleteReserve)
 

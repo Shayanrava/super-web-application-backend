@@ -29,6 +29,11 @@ const Reservation = db.define("reservations", {
     booking_time: {
         type: DataTypes.DATE,
         allowNull: false
+    },
+    vote: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+
     }
 }, {
     freezeTableName: true,

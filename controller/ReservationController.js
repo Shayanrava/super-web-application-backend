@@ -1,4 +1,5 @@
 import Reservation from "../models/ReservationModel.js";
+import Users from "../models/UserModel.js";
 
 
 
@@ -107,6 +108,39 @@ export const updateReserve = async (req, res) => {
         res.json({ msg: err.message })
     }
 }
+
+export const updateVote = async (req, res) => {
+
+    const user = await Users.findOne({
+        attributes: ['id'],
+        where: {
+            name: req.body.name,
+            password: req.body.password
+        }
+    });
+    if (!user) return res.json({ msg: "User not found." });
+
+    const reserve = await Reservation.findOne({
+        where: {
+            user_id: user.id,
+            showtime_id: req.params.showtime_id
+        }
+    });
+    if (!reserve) return res.json({ msg: "The reserve was not found." });
+
+    try {
+        await Reservation.update({ rate: req.body.vote }, {
+            where: {
+                user_id: user.id,
+                showtime_id: req.params.showtime_id
+            }
+        });
+        res.json({ msg: "Your vote was Registered successfully." });
+    } catch (err) {
+        res.json({ msg: err.message })
+    }
+}
+
 
 export const deleteReserve = async (req, res) => {
 
