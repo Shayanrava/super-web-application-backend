@@ -1,3 +1,4 @@
+import Reservation from "../models/ReservationModel.js";
 import Showtime from "../models/ShowtimeModel.js";
 import Users from "../models/UserModel.js";
 
@@ -27,7 +28,7 @@ export const getSingleShowTime = async (req, res) => {
 
 export const getUsersShowtimes = async (req, res) => {
     try {
-        const response = await Users.findOne({
+        const responseUser = await Users.findOne({
             attributes: ['id'],
             where: {
                 name: req.body.name,
@@ -35,12 +36,23 @@ export const getUsersShowtimes = async (req, res) => {
             }
         });
 
-        console.log(response);
+        if (!responseUser) {
+            return res.status(404).json({ msg: "User not found" });
+        }
+
+        const responseReserve = await Reservation.findAll({
+            attributes: [
+                [Sequelize.literal('DISTINCT `showtime_id`'), 'showtime_id']
+            ],
+            where: {
+                user_id: responseUser.dataValues.id
+            }
+        })
+        console.log(responseReserve);
 
     } catch (error) {
-
+        res.json({ msg: err.message })
     }
-
 }
 
 export const saveShowTime = async (req, res) => {
