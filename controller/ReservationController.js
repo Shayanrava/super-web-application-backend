@@ -144,7 +144,6 @@ export const updateVote = async (req, res) => {
         if (vote > 5 || vote < 0) return res.json({ msg: "Your vote must be between 0 and 5." })
 
 
-
         const reserve = await Reservation.findOne({
             where: {
                 id: req.params.id
@@ -178,10 +177,12 @@ export const updateVote = async (req, res) => {
                 id: req.params.id
             }
         });
-
+        if(reserve.rate == null) {
+            number ++
+        }
         await Movie.update({
             rating: avg,
-            ratingCount: number + 1
+            ratingCount: number 
         }, {
             where: {
                 id: movieID.movie_id
