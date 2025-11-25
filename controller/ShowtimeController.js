@@ -148,7 +148,7 @@ export const updateShowTime = async (req, res) => {
         price = req.body.price;
     }
 
-    if (new Date(`${date}T${start_time}`) >= new Date(`${date}T${end_time}`)) return res.json({ msg: "Start time must be earlier than end time." });
+    if (new Date(`2025-01-01T${start_time}:00`) >= new Date(`2025-01-01T${end_time}:00`)) return res.json({ msg: "Start time must be earlier than end time." });
 
     try {
         await Showtime.update({ movie_id: movie_id, date: date, start_time: start_time, end_time: end_time, price: price }, {
