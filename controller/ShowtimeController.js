@@ -2,17 +2,22 @@ import Reservation from "../models/ReservationModel.js";
 import Showtime from "../models/ShowtimeModel.js";
 import Users from "../models/UserModel.js";
 import { Sequelize } from "sequelize";
-
+import { Op } from "sequelize";
 
 export const getShowTimes = async (req, res) => {
     try {
-        console.log("evrything is ok");
-        const response = await Showtime.findAll();
+        const response = await Showtime.findAll({
+            where: {
+                date: {
+                    [Op.gt]: new Date()
+                }
+            }
+        });
         res.json(response);
     } catch (error) {
-        console.log(error);
+        res.status(500).json({ msg: error.message });
     }
-}
+};
 
 export const getSingleShowTime = async (req, res) => {
     try {
