@@ -75,7 +75,7 @@ export const getUsersShowtimes = async (req, res) => {
 export const saveShowTime = async (req, res) => {
     if (!req.body.movie_id) return res.json({ msg: "movie ID is required." });
     if (!req.body.date) return res.json({ msg: "Date is required." });
-    if (req.body.date < new Date()) return res.json({ msg: "Date can't be in past ." });
+    if (new Date(req.body.date) < new Date()) return res.json({ msg: "Date can't be in past ." });
     if (!req.body.start_time) return res.json({ msg: "Start time is required." });
     if (!req.body.end_time) return res.json({ msg: "End time is required." });
     if (new Date(`${req.body.date}T${req.body.start_time}`) >= new Date(`${req.body.date}T${req.body.end_time}`)) return res.json({ msg: "Start time must be earlier than end time." });
@@ -102,7 +102,7 @@ export const updateShowTime = async (req, res) => {
 
     if (req.body.date) {
         if (isNaN(new Date(req.body.date))) return res.json({ msg: "Invalid date." });
-        if (req.body.date < new Date()) return res.json({ msg: "Date can't be in past ." });
+        if (new Date(req.body.date) < new Date()) return res.json({ msg: "Date can't be in past ." });
     }
     if (req.body.start_time) {
         if (isNaN(new Date(`${req.body.date}T${req.body.start_time}`))) return res.json({ msg: "Invalid start time." });
