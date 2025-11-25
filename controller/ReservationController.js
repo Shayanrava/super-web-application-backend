@@ -160,7 +160,7 @@ export const updateVote = async (req, res) => {
             }
         });
 
-        if (reservelength === 0) return res.json({ msg: "The reserve was not found." });
+        if (reserve.length === 0) return res.json({ msg: "The reserve was not found." });
 
         const movieID = await Showtime.findOne(
             {
