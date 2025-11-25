@@ -186,7 +186,7 @@ export const updateVote = async (req, res) => {
         });
 
         await Movie.update({
-            rating: avg,
+            rating: avg.toFixed(3),
             ratingCount: number
         }, {
             where: {
