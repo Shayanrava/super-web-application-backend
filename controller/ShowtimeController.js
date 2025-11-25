@@ -133,14 +133,12 @@ export const updateShowTime = async (req, res) => {
     if (req.body.start_time == "") {
         start_time = showtime.start_time;
     } else {
-        if (isNaN(new Date(`${date}T${req.body.start_time}`))) return res.json({ msg: "Invalid start time." });
         start_time = req.body.start_time;
     }
 
     if (req.body.end_time == "") {
         end_time = showtime.end_time;
     } else {
-        if (isNaN(new Date(`${date}T${req.body.end_time}`))) return res.json({ msg: "Invalid end time." });
         end_time = req.body.end_time;
     }
 
