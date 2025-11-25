@@ -182,30 +182,3 @@ export const deleteShowTime = async (req, res) => {
     }
 }
 
-export const setSeat = async (req, res) => {
-
-    const response = await Showtime.findOne({
-        where: {
-            id: req.params.id
-        }
-    });
-    if (!response) return res.json({ msg: "The showtime was not found." });
-
-    const movie_id = response.movie_id;
-    const date = response.date;
-    const start_time = response.start_time;
-    const end_time = response.end_time;
-    const price = response.price;
-    const number = response.available_seats - 1;
-
-    try {
-        await Showtime.update({ movie_id: movie_id, date: date, start_time: start_time, end_time: end_time, available_seats: number, price: price }, {
-            where: {
-                id: req.params.id
-            }
-        });
-        res.json({ msg: "The showtime was update successfully." });
-    } catch (err) {
-        res.json({ msg: err.message })
-    }
-}

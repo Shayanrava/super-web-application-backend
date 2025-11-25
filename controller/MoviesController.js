@@ -190,5 +190,3 @@ export const setVote = async (req, res) => {
     }
 }
 
-
-// باید مقدار توضیحات از 320 کمتر باشه 

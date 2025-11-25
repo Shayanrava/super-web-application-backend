@@ -1,7 +1,9 @@
 import db from "../config/DB.js";
+import Movie from "../models/MovieModel.js";
 import Reservation from "../models/ReservationModel.js";
 import Showtime from "../models/ShowtimeModel.js";
 import Users from "../models/UserModel.js";
+
 
 
 
@@ -52,7 +54,7 @@ export const saveReserve = async (req, res) => {
     const showtime_id = req.body.showtime_id;
     const seat_number = req.body.seat_number;
     const booking_time = req.body.booking_time;
-     try {
+    try {
         await db.transaction(async (t) => {
             const existing = await Reservation.findOne({
                 where: { showtime_id, seat_number },
@@ -136,29 +138,66 @@ export const updateReserve = async (req, res) => {
 
 export const updateVote = async (req, res) => {
 
-    const user = await Users.findOne({
-        attributes: ['id'],
-        where: {
-            name: req.body.name,
-            password: req.body.password
-        }
-    });
-    if (!user) return res.json({ msg: "User not found." });
-    const reserve = await Reservation.findOne({
-        where: {
-            user_id: user.id,
-            showtime_id: req.params.showtime_id
-        }
-    });
-    if (!reserve) return res.json({ msg: "The reserve was not found." });
-
     try {
+
+        const vote = req.body.vote;
+        if (vote > 5 || vote < 0) return res.json({ msg: "Your vote must be between 0 and 5." })
+
+        const user = await Users.findOne({
+            attributes: ['id'],
+            where: {
+                name: req.body.name,
+                password: req.body.password
+            }
+        });
+
+        if (!user) return res.json({ msg: "User not found." });
+
+        const reserve = await Reservation.findAll({
+            where: {
+                user_id: user.id,
+                showtime_id: req.params.showtime_id
+            }
+        });
+
+        if (reservelength === 0) return res.json({ msg: "The reserve was not found." });
+
+        const movieID = await Showtime.findOne(
+            {
+                attributes: ['movie_id'],
+                where: {
+                    id: req.params.showtime_id
+                }
+            }
+        )
+
+        const movie =await Movie.findOne(
+            {
+                where: {
+                    id: movieID.movie_id
+                }
+            }
+        )
+        const number = Number(movie.ratingCount);
+        const preRating = Number(movie.rating);
+        const avg = ((vote * 1) + (preRating * number)) / (number + 1)
+
         await Reservation.update({ rate: req.body.vote }, {
             where: {
                 user_id: user.id,
                 showtime_id: req.params.showtime_id
             }
         });
+
+        await Movie.update({
+            rating: avg,
+            ratingCount: number + reserve.length
+        }, {
+            where: {
+                id: movieID.movie_id
+            }
+        });
+
         res.json({ msg: "Your vote was Registered successfully." });
     } catch (err) {
         res.json({ msg: err.message })
