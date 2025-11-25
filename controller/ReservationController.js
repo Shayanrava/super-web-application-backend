@@ -167,22 +167,27 @@ export const updateVote = async (req, res) => {
                 }
             }
         )
-
-        const number = Number(movie.ratingCount);
+        let number = Number(movie.ratingCount);
         const preRating = Number(movie.rating);
-        const avg = ((vote * 1) + (preRating * number)) / (number + 1)
+        let avg = 0
+        if (reserve.rate == null) {
+            avg = ((vote * 1) + (preRating * number)) / (number + 1)
+            number = number + 1
+
+        } else {
+            avg = ((preRating * number) + (vote - reserve.rate)) / number
+        }
+
 
         await Reservation.update({ rate: req.body.vote }, {
             where: {
                 id: req.params.id
             }
         });
-        if(reserve.rate == null) {
-            number ++
-        }
+
         await Movie.update({
             rating: avg,
-            ratingCount: number 
+            ratingCount: number
         }, {
             where: {
                 id: movieID.movie_id
