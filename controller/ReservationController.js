@@ -1,6 +1,7 @@
+import db from "../config/DB.js";
 import Reservation from "../models/ReservationModel.js";
+import Showtime from "../models/ShowtimeModel.js";
 import Users from "../models/UserModel.js";
-
 
 
 
@@ -42,20 +43,44 @@ export const getShowtimeReserve = async (req, res) => {
 }
 
 export const saveReserve = async (req, res) => {
-    if (!req.body.user_id) return res.json({ msg: "User ID is required." });
-    if (!req.body.showtime_id) return res.json({ msg: "Showtime ID is required." });
-    if (!req.body.seat_number) return res.json({ msg: "Seat number is required." });
-    if (!req.body.booking_time) return res.json({ msg: "Booking time is required." });
+    if (!req.body.user_id) return res.status(400).json({ msg: "User ID is required." });
+    if (!req.body.showtime_id) return res.status(400).json({ msg: "Showtime ID is required." });
+    if (!req.body.seat_number) return res.status(400).json({ msg: "Seat number is required." });
+    if (!req.body.booking_time) return res.status(400).json({ msg: "Booking time is required." });
 
     const user_id = req.body.user_id;
     const showtime_id = req.body.showtime_id;
     const seat_number = req.body.seat_number;
     const booking_time = req.body.booking_time;
-    try {
-        await Reservation.create({ user_id: user_id, seat_number: seat_number, showtime_id: showtime_id, booking_time: booking_time });
-        res.json({ msg: "Reservation was successful." });
+     try {
+        await db.transaction(async (t) => {
+            const existing = await Reservation.findOne({
+                where: { showtime_id, seat_number },
+                transaction: t
+            });
+            if (existing) throw new Error("This seat is already booked.");
+
+            const showtime = await Showtime.findOne({
+                where: { id: showtime_id },
+                transaction: t
+            });
+            if (!showtime) throw new Error("Showtime not found.");
+            if (showtime.available_seats <= 0) throw new Error("No available seats.");
+
+            await Reservation.create(
+                { user_id, seat_number, showtime_id, booking_time },
+                { transaction: t }
+            );
+
+            await Showtime.update(
+                { available_seats: showtime.available_seats - 1 },
+                { where: { id: showtime_id }, transaction: t }
+            );
+        });
+
+        res.status(200).json({ msg: "Reservation was successful." });
     } catch (err) {
-        res.json({ msg: err.message })
+        res.status(400).json({ msg: err.message });
     }
 }
 
