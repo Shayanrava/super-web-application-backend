@@ -104,14 +104,6 @@ export const updateShowTime = async (req, res) => {
         if (isNaN(new Date(req.body.date))) return res.json({ msg: "Invalid date." });
         if (new Date(req.body.date) < new Date()) return res.json({ msg: "Date can't be in past ." });
     }
-    if (req.body.start_time) {
-        if (isNaN(new Date(`${req.body.date}T${req.body.start_time}`))) return res.json({ msg: "Invalid start time." });
-
-    }
-    if (req.body.end_time) {
-        if (isNaN(new Date(`${req.body.date}T${req.body.start_time}`))) return res.json({ msg: "Invalid end time." });
-    }
-
 
     const showtime = await Showtime.findOne({
         where: {
@@ -141,12 +133,14 @@ export const updateShowTime = async (req, res) => {
     if (req.body.start_time == "") {
         start_time = showtime.start_time;
     } else {
+        if (isNaN(new Date(`${date}T${req.body.start_time}`))) return res.json({ msg: "Invalid start time." });
         start_time = req.body.start_time;
     }
 
     if (req.body.end_time == "") {
         end_time = showtime.end_time;
     } else {
+        if (isNaN(new Date(`${date}T${req.body.start_time}`))) return res.json({ msg: "Invalid end time." });
         end_time = req.body.end_time;
     }
 
@@ -157,7 +151,6 @@ export const updateShowTime = async (req, res) => {
     }
 
     if (new Date(`${date}T${start_time}`) >= new Date(`${date}T${end_time}`)) return res.json({ msg: "Start time must be earlier than end time." });
-
 
     try {
         await Showtime.update({ movie_id: movie_id, date: date, start_time: start_time, end_time: end_time, price: price }, {
