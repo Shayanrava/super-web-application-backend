@@ -78,10 +78,10 @@ export const saveShowTime = async (req, res) => {
     if (req.body.date < new Date()) return res.json({ msg: "Date can't be in past ." });
     if (!req.body.start_time) return res.json({ msg: "Start time is required." });
     if (!req.body.end_time) return res.json({ msg: "End time is required." });
-    if (new Date(req.body.start_time) >= new Date(req.body.end_time)) return res.json({ msg: "Start time must be earlier than end time." });
+    if (new Date(`${req.body.date}T${req.body.start_time}`) >= new Date(`${req.body.date}T${req.body.end_time}`)) return res.json({ msg: "Start time must be earlier than end time." });
     if (isNaN(new Date(req.body.date))) return res.json({ msg: "Invalid date." });
-    if (isNaN(new Date(req.body.start_time))) return res.json({ msg: "Invalid start time." });
-    if (isNaN(new Date(req.body.end_time))) return res.json({ msg: "Invalid end time." });
+    if (isNaN(new Date(`${req.body.date}T${req.body.start_time}`))) return res.json({ msg: "Invalid start time." });
+    if (isNaN(new Date(`${req.body.date}T${req.body.end_time}`))) return res.json({ msg: "Invalid end time." });
     if (!req.body.price) return res.json({ msg: "Price is required." });
     if (req.body.price <= 0) return res.json({ msg: "Price must be more than 0" })
 
@@ -105,12 +105,12 @@ export const updateShowTime = async (req, res) => {
         if (req.body.date < new Date()) return res.json({ msg: "Date can't be in past ." });
     }
     if (req.body.start_time) {
-        if (isNaN(new Date(req.body.start_time))) return res.json({ msg: "Invalid start time." });
+        if (isNaN(new Date(`${req.body.date}T${req.body.start_time}`))) return res.json({ msg: "Invalid start time." });
 
     }
     if (req.body.end_time) {
-        if (isNaN(new Date(req.body.end_time))) return res.json({ msg: "Invalid end time." });
-        if (new Date(req.body.start_time) >= new Date(req.body.end_time)) return res.json({ msg: "Start time must be earlier than end time." });
+        if (isNaN(new Date(`${req.body.date}T${req.body.start_time}`))) return res.json({ msg: "Invalid end time." });
+        if (new Date(`${req.body.date}T${req.body.start_time}`) >= new Date(`${req.body.date}T${req.body.end_time}`)) return res.json({ msg: "Start time must be earlier than end time." });
     }
     const showtime = await Showtime.findOne({
         where: {
