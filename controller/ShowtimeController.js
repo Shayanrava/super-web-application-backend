@@ -52,8 +52,7 @@ export const getUsersShowtimes = async (req, res) => {
             },
             include: [
                 {
-                    model: Showtime,
-                    attributes: ['id', 'start_time', 'end_time', 'movie_id']
+                    model: Showtime
                 }
             ]
         });
