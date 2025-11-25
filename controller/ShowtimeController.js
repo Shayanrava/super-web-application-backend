@@ -110,8 +110,9 @@ export const updateShowTime = async (req, res) => {
     }
     if (req.body.end_time) {
         if (isNaN(new Date(`${req.body.date}T${req.body.start_time}`))) return res.json({ msg: "Invalid end time." });
-        if (new Date(`${req.body.date}T${req.body.start_time}`) >= new Date(`${req.body.date}T${req.body.end_time}`)) return res.json({ msg: "Start time must be earlier than end time." });
     }
+
+
     const showtime = await Showtime.findOne({
         where: {
             id: req.params.id
@@ -154,6 +155,9 @@ export const updateShowTime = async (req, res) => {
     } else {
         price = req.body.price;
     }
+
+    if (new Date(`${date}T${start_time}`) >= new Date(`${date}T${end_time}`)) return res.json({ msg: "Start time must be earlier than end time." });
+
 
     try {
         await Showtime.update({ movie_id: movie_id, date: date, start_time: start_time, end_time: end_time, price: price }, {
