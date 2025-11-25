@@ -31,6 +31,7 @@ export const saveMovie = async (req, res) => {
     if (!req.body) return res.json({ msg: "Please provide some information about the movie." });
     if (!req.body.title) return res.json({ msg: "Title is required." });
     if (!req.body.description) return res.json({ msg: "Description is required." });
+    if(req.body.description.length > 340) return res.json({ msg: "The description length must be less than 340 characters." });
     if (!req.body.genre) return res.json({ msg: "Genre is required." });
     if (!req.body.releaseYear) return res.json({ msg: "Release year is required." });
     if (!req.files || !req.files.file) return res.json({ msg: "You must select a poster." });
