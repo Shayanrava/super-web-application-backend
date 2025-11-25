@@ -90,9 +90,10 @@ export const deleteMovie = async (req, res) => {
 
 export const updateMovie = async (req, res) => {
 
-    if (!req.body) return res.status(400).json({ msg: "Request body is missing." });
-    if (req.body.description !=null) {
-        if (req.body.description.length > 340) return res.json({ msg: `The description length must be less than 340 characters. length of your description is ${req.body.description.length}` });
+    if (req.body) {
+        if (req.body.description != null) {
+            if (req.body.description.length > 340) return res.json({ msg: `The description length must be less than 340 characters. length of your description is ${req.body.description.length}` });
+        }
     }
     const movie = await Movie.findOne({
         where: {

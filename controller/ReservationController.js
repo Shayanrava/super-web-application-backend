@@ -143,49 +143,39 @@ export const updateVote = async (req, res) => {
         const vote = req.body.vote;
         if (vote > 5 || vote < 0) return res.json({ msg: "Your vote must be between 0 and 5." })
 
-        const user = await Users.findOne({
-            attributes: ['id'],
+
+
+        const reserve = await Reservation.findOne({
             where: {
-                name: req.body.name,
-                password: req.body.password
+                id: req.params.id
             }
         });
-
-        if (!user) return res.json({ msg: "User not found." });
-
-        const reserve = await Reservation.findAll({
-            where: {
-                user_id: user.id,
-                showtime_id: req.params.showtime_id
-            }
-        });
-
-        if (reserve.length === 0) return res.json({ msg: "The reserve was not found." });
+        if (!reserve) return res.json({ msg: "The reserve was not found." });
 
         const movieID = await Showtime.findOne(
             {
                 attributes: ['movie_id'],
                 where: {
-                    id: req.params.showtime_id
+                    id: reserve.showtime_id
                 }
             }
         )
 
-        const movie =await Movie.findOne(
+        const movie = await Movie.findOne(
             {
                 where: {
                     id: movieID.movie_id
                 }
             }
         )
+
         const number = Number(movie.ratingCount);
         const preRating = Number(movie.rating);
         const avg = ((vote * 1) + (preRating * number)) / (number + 1)
 
         await Reservation.update({ rate: req.body.vote }, {
             where: {
-                user_id: user.id,
-                showtime_id: req.params.showtime_id
+                id: req.params.id
             }
         });
 

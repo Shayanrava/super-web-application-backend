@@ -34,7 +34,7 @@ router.delete("/reservation/:id", deleteReserve)
 
 
 router.get("/reservation/:id", getShowtimeReserve)
-router.post("/reservation/:showtime_id" , updateVote)
+router.post("/reservation/:id" , updateVote)
 router.post("/users-showtimes" , getUsersShowtimes)
 router.post("/userID", getUserID)
 
