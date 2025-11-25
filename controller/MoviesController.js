@@ -164,29 +164,4 @@ export const updateMovie = async (req, res) => {
     }
 }
 
-export const setVote = async (req, res) => {
-    const movie = await Movie.findOne({
-        where: {
-            id: req.params.id
-        }
-    });
-    const vote = req.body.rating;
-    if (vote > 5 || vote < 0) return res.json({ msg: "Your vote must be between 0 and 5." })
-    const number = Number(movie.ratingCount);
-    const preRating = Number(movie.rating);
-    const avg = ((vote * 1) + (preRating * number)) / (number + 1)
-    try {
-        await Movie.update({
-            title: movie.title, description: movie.description, genre: movie.genre, rating: avg,
-            ratingCount: number + 1, releaseYear: movie.releaseYear, imageUrl: movie.imageUrl
-        }, {
-            where: {
-                id: req.params.id
-            }
-        });
-        res.json({ msg: "Your vote has been recorded." });
-    } catch (err) {
-        res.json({ msg: err.message })
-    }
-}
 

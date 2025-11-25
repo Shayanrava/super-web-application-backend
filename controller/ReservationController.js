@@ -198,7 +198,7 @@ export const updateVote = async (req, res) => {
             }
         });
 
-        res.json({ msg: "Your vote was Registered successfully." });
+        res.json({ msg: "Your vote has been recorded successfully." });
     } catch (err) {
         res.json({ msg: err.message })
     }

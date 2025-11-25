@@ -34,7 +34,8 @@ export const getSingleShowTime = async (req, res) => {
 
 export const getUsersShowtimes = async (req, res) => {
     try {
-        const responseUser = await Users.findOne({
+
+        const user = await Users.findOne({
             attributes: ['id'],
             where: {
                 name: req.body.name,
@@ -42,33 +43,25 @@ export const getUsersShowtimes = async (req, res) => {
             }
         });
 
-        if (!responseUser) {
-            return res.status(404).json({ msg: "User not found" });
-        }
+        if (!user) return res.status(404).json({ msg: "User not found" });
 
-        const responseReserve = await Reservation.findAll({
-            attributes: [
-                [Sequelize.literal('DISTINCT `showtime_id`'), 'showtime_id']
-            ],
+        const reservations = await Reservation.findAll({
+            attributes: ['id', 'seat_number', 'rate', 'showtime_id'],
             where: {
-                user_id: responseUser.dataValues.id
-            }
-        })
-
-        const showtimeID = responseReserve.map(r => r.showtime_id);
-
-        const responseShowtime = await Showtime.findAll({
-            where: {
-                id: showtimeID
-            }
+                user_id: user.id
+            },
+            include: [
+                {
+                    model: Showtime,
+                    attributes: ['id', 'start_time', 'end_time', 'movie_id']
+                }
+            ]
         });
 
-        return res.json(responseShowtime);
-
-
+        return res.json(reservations);
 
     } catch (error) {
-        res.status(500).json({ msg: error.message })
+        res.status(500).json({ msg: error.message });
     }
 }
 
