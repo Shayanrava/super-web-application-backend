@@ -11,7 +11,6 @@ const router = express.Router()
 router.get("/users", getUsers) // http://localhost:12793/users , https://super-web-application-backend-production.up.railway.app/users
 router.get("/users/:id", singleUser)
 router.post("/users", saveUser)
-router.post("/userID", getUserID)
 router.put("/users/:id", updateUser)
 router.delete("/users/:id", deleteUser)
 
@@ -20,26 +19,26 @@ router.get("/movies/:id", singleMovie)
 router.post("/movies", saveMovie)
 router.delete("/movies/:id", deleteMovie)
 router.put("/movies/:id", updateMovie)
-router.put("/movies/vote/:id", setVote)
 
-router.post("/users-showtimes" , getUsersShowtimes)
 
 router.get("/showtimes" , getShowTimes)
 router.get("/showtimes/:id", getSingleShowTime)
 router.post("/showtimes" , saveShowTime)
 router.delete("/showtimes/:id", deleteShowTime)
 router.put("/showtimes/:id", updateShowTime)
-router.put("/showtimes/seat/:id", setSeat)
 
 router.get("/reservation" , getReserve)
-router.get("/reservation/:id", getShowtimeReserve)
 router.post("/reservation" , saveReserve)
-router.post("/reservation/:showtime_id" , updateVote)
 router.put("/reservation/:id", updateReserve)
 router.delete("/reservation/:id", deleteReserve)
 
 
-
+router.get("/reservation/:id", getShowtimeReserve)
+router.post("/reservation/:showtime_id" , updateVote)
+router.post("/users-showtimes" , getUsersShowtimes)
+router.post("/userID", getUserID)
+router.put("/movies/vote/:id", setVote)
+router.put("/showtimes/seat/:id", setSeat)
 
 
 

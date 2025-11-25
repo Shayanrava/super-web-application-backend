@@ -119,7 +119,6 @@ export const updateVote = async (req, res) => {
         }
     });
     if (!user) return res.json({ msg: "User not found." });
-
     const reserve = await Reservation.findOne({
         where: {
             user_id: user.id,
