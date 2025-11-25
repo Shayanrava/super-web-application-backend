@@ -27,7 +27,7 @@ export const singleUser = async (req, res) => {
 
 export const getUserID = async (req, res) => {
 
-    if(!req.body.name || !req.body.body) return res.json({msg:"Name and password are required ."})
+    if(!req.body.name || !req.body.password) return res.json({msg:"Name and password are required ."})
     try {
         const response = await Users.findOne({
             attributes: ['id'],
