@@ -5,10 +5,10 @@ import { deleteShowTime, getShowTimes, getSingleShowTime, getUsersShowtimes, sav
 import { deleteReserve, getReserve, getShowtimeReserve, saveReserve, updateReserve, updateVote } from "../controller/ReservationController.js";
 
 
-
+// http://localhost:12793/ , https://super-web-application-backend-production.up.railway.app/
 const router = express.Router()
 
-router.get("/users", getUsers) // http://localhost:12793/users , https://super-web-application-backend-production.up.railway.app/users
+router.get("/users", getUsers) 
 router.get("/users/:id", singleUser)
 router.post("/users", saveUser)
 router.put("/users/:id", updateUser)
@@ -37,6 +37,7 @@ router.get("/reservation/:id", getShowtimeReserve)
 router.post("/reservation/:id" , updateVote)
 router.post("/users-showtimes" , getUsersShowtimes)
 router.post("/userID", getUserID)
+
 
 
 

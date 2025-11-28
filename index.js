@@ -5,11 +5,13 @@ import router from "./routes/superRoutes.js";
 
 // npm express express-fileupload mysql2 sequelize cors
 
+// mysql -h mainline.proxy.rlwy.net -u root -p --port 30127 --protocol=TCP railway
+// ViRUVsEhTYvRcmJtndwLmfwrGJjsFaBU
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(fileUpload());
+app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
 app.use(express.static("public"));
 app.use(router)
 
