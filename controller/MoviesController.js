@@ -44,7 +44,10 @@ export const saveMovie = async (req, res) => {
         const dateNow = Date.now().toString();
         const uploadResult = await cloudinary.uploader.upload(
             file.tempFilePath,
-            { public_id: dateNow }
+            {
+                folder: 'movies',
+                public_id: dateNow
+            }
         );
         if (!uploadResult) return res.json({ msg: "Image upload failed." });
         const optimizeUrl = cloudinary.url(dateNow, {
