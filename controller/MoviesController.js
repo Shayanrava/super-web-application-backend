@@ -50,7 +50,7 @@ export const saveMovie = async (req, res) => {
             }
         );
         if (!uploadResult) return res.json({ msg: "Image upload failed." });
-        const optimizeUrl = cloudinary.url(dateNow, {
+        const optimizeUrl = cloudinary.url(`movies/${dateNow}`, {
             fetch_format: "auto",
             quality: "auto",
         });
