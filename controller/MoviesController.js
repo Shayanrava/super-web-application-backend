@@ -78,7 +78,7 @@ export const deleteMovie = async (req, res) => {
         if (!response) return res.json({ msg: "The movie was not found." });
 
         const fileName = response.imageUrl.split("/").pop().split("?")[0];
-        await cloudinary.uploader.destroy(fileName);
+        await cloudinary.uploader.destroy(`movies/${fileName}`);
 
         const deletedCount = await Movie.destroy({
             where: {
@@ -160,7 +160,7 @@ export const updateMovie = async (req, res) => {
 
             if (!uploadResult) return res.json({ msg: "Image upload failed." });
 
-            optimizeUrl = cloudinary.url(dateNow, {
+            optimizeUrl = cloudinary.url(`movies/${dateNow}`, {
                 fetch_format: "auto",
                 quality: "auto",
             });
