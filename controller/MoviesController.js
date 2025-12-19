@@ -147,7 +147,7 @@ export const updateMovie = async (req, res) => {
             if (fileSize > 5000000) return res.json({ msg: "The image size is larger than 5 MB." });
 
             const fileName = movie.imageUrl.split("/").pop().split("?")[0];
-            await cloudinary.uploader.destroy(fileName);
+            await cloudinary.uploader.destroy(`movies/${fileName}`);
 
             const dateNow = Math.round(Date.now());
             const uploadResult = await cloudinary.uploader.upload(
