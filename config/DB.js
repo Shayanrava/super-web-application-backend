@@ -1,15 +1,16 @@
 import pkg from 'pg';
 const { Pool } = pkg;
 
+const connectionString = process.env.PRISMA_DATABASE_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL;
+
 const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
   ssl: {
     rejectUnauthorized: false 
   }
 });
 
 export default db;
-
 `
 CREATE TABLE users (
   id BIGSERIAL PRIMARY KEY,
