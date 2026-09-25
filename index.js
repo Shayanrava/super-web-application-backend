@@ -16,5 +16,5 @@ app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
 app.use(express.static("public"));
 app.use(router)
 
-app.listen(12793, () => console.log("Server is running on port 12793"));
-
+const PORT = process.env.PORT || 12793;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
