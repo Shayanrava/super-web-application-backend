@@ -14,7 +14,7 @@ export const EmailSender = async (
     console.log("Attempting to send email to:", toEmail); 
     
     const data = await resend.emails.send({
-      from: "onboarding@resend.dev", 
+      from: "Super Cinema <onboarding@resend.dev>", 
       to: toEmail,
       subject: "Reservation Confirmation 🎬",
       html: `
