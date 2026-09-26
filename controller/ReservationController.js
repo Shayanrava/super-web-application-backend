@@ -61,9 +61,9 @@ export const saveReserve = async (req, res) => {
         if (!req.body.showtime_id) return res.status(400).json({ msg: "Showtime ID is required." });
         if (!req.body.seat_number) return res.status(400).json({ msg: "Seat number is required." });
         if (!Number.isInteger(Number(req.body.seat_number)) || req.body.seat_number <= 0) return res.status(400).json({ msg: "Seat number is Invalid ." });
-        
+
         const { user_id, showtime_id, seat_number } = req.body;
-        
+
         const selectUserQuery = `SELECT * FROM users WHERE id = $1`;
         const userResult = await client.query(selectUserQuery, [user_id]);
         if (userResult.rows.length === 0) {
@@ -86,14 +86,14 @@ export const saveReserve = async (req, res) => {
             client.release();
             return res.status(404).json({ msg: "The showtime not found ." });
         }
-        
+
         const showtime = showtimeResult.rows[0];
         if (new Date(`${showtime.date.toISOString().split("T")[0]}T${showtime.start_time}`) < new Date()) {
             await client.query('ROLLBACK');
             client.release();
             return res.status(409).json({ msg: "Reservation time has expired ." });
         }
-        
+
         if (showtime.available_seats === 0) {
             await client.query('ROLLBACK');
             client.release();
@@ -124,7 +124,7 @@ export const saveReserve = async (req, res) => {
             WHERE id = $2
         `;
         await client.query(updateQuery, [showtime.available_seats - 1, showtime_id]);
-        
+
         await client.query('COMMIT');
         client.release();
 
@@ -138,14 +138,14 @@ export const saveReserve = async (req, res) => {
                 showtime.start_time
             );
         } catch (emailError) {
-            console.log("Email failed:", emailError.message);
-        } 
-        
+            console.error("Email failed explicitly in controller:", emailError);
+        }
+
         res.status(201).json({ msg: "Reservation was successful." });
     } catch (err) {
         try {
             await client.query('ROLLBACK');
-        } catch (rollbackErr) {}
+        } catch (rollbackErr) { }
         client.release();
         res.status(500).json({ msg: err.message });
     }
@@ -158,18 +158,18 @@ export const updateVote = async (req, res) => {
         if (isNaN(vote)) return res.status(400).json({ msg: "Vote must be a number." });
         vote = Number(vote.toFixed(1));
         if (vote > 5 || vote < 0) return res.status(400).json({ msg: "Your vote must be between 0 and 5." });
-        
+
         const selectQuery = `SELECT * FROM reservations WHERE id = $1`;
         const reserveResult = await db.query(selectQuery, [req.params.id]);
         if (reserveResult.rows.length === 0) return res.status(404).json({ msg: "The reserve was not found." });
-        
+
         const reserve = reserveResult.rows[0];
         const selectShowtimeQuery = `SELECT * FROM showtimes AS s WHERE s.id = $1`;
         const showtimeResult = await db.query(selectShowtimeQuery, [reserve.showtime_id]);
-        
+
         if (new Date(`${showtimeResult.rows[0].date.toISOString().split("T")[0]}T${showtimeResult.rows[0].end_time}`) > new Date())
             return res.status(409).json({ msg: "You can only vote after the movie is over." });
-            
+
         const selectMovieQuery = `
             SELECT m.* 
             FROM showtimes AS s 
@@ -178,25 +178,25 @@ export const updateVote = async (req, res) => {
         `;
         const movieResult = await db.query(selectMovieQuery, [reserve.showtime_id]);
         const movie = movieResult.rows[0];
-        
+
         let number = Number(movie.rating_count);
         const preRating = Number(movie.rating);
         let avg = 0;
-        
+
         if (reserve.rate == null) {
             avg = ((vote * 1) + (preRating * number)) / (number + 1);
             number = number + 1;
         } else {
             avg = ((preRating * number) + (vote - reserve.rate)) / number;
         }
-        
+
         const updateReserveQuery = `
             UPDATE reservations
                 SET rate = $1
             WHERE id = $2
         `;
         await db.query(updateReserveQuery, [vote, req.params.id]);
-        
+
         const updateMovieQuery = `
             UPDATE movies
                 SET rating = $1, rating_count = $2
@@ -219,18 +219,18 @@ export const deleteReserve = async (req, res) => {
         `;
         const response = await db.query(selectQuery, [req.params.id]);
         if (response.rows.length === 0) return res.status(404).json({ msg: "Reservation not found ." });
-        
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const showDate = new Date(response.rows[0].date);
         showDate.setHours(0, 0, 0, 0);
-        
+
         if (showDate <= today)
             return res.status(409).json({ msg: "Cannot cancel reservation. Cancellation must be done before the show date." });
-            
+
         const removeQuery = `DELETE FROM reservations WHERE id = $1`;
         await db.query(removeQuery, [req.params.id]);
-        
+
         res.status(200).json({ msg: "Reservation deleted successfully." });
     } catch (error) {
         res.status(500).json({ msg: error.message });
