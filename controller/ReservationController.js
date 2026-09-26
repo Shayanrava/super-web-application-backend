@@ -53,26 +53,35 @@ export const getSingleReserve = async (req, res) => {
         res.status(500).json({ msg: error.message });
     }
 }
-
 export const saveReserve = async (req, res) => {
-    const client = await db.connect(); // گرفتن کلاینت برای مدیریت تراکنش در pg
+    const client = await db.connect();
     try {
         if (!req.body.user_id) return res.status(400).json({ msg: "User ID is required." });
         if (!req.body.showtime_id) return res.status(400).json({ msg: "Showtime ID is required." });
         if (!req.body.seat_number) return res.status(400).json({ msg: "Seat number is required." });
-        if (!Number.isInteger(Number(req.body.seat_number)) || req.body.seat_number <= 0) return res.status(400).json({ msg: "Seat number is Invalid ." });
 
-        const { user_id, showtime_id, seat_number } = req.body;
-
+        const { user_id, showtime_id } = req.body;
+        let seatsArray;
+        try {
+            seatsArray = JSON.parse(req.body.seat_number);
+        } catch (e) {
+            return res.status(400).json({ msg: "Invalid seat format." });
+        }
+        if (!Array.isArray(seatsArray) || seatsArray.length === 0) {
+            return res.status(400).json({ msg: "Seat numbers are invalid." });
+        }
+        for (const seat of seatsArray) {
+            if (!Number.isInteger(Number(seat)) || seat <= 0) {
+                return res.status(400).json({ msg: "Invalid seat number value." });
+            }
+        }
         const selectUserQuery = `SELECT * FROM users WHERE id = $1`;
         const userResult = await client.query(selectUserQuery, [user_id]);
         if (userResult.rows.length === 0) {
             client.release();
             return res.status(404).json({ msg: "The user not found ." });
         }
-
         await client.query('BEGIN');
-
         const selectShowtimeQuery = `
             SELECT s.* , m.title AS title , m.image_url AS image_url
             FROM showtimes AS s
@@ -86,54 +95,51 @@ export const saveReserve = async (req, res) => {
             client.release();
             return res.status(404).json({ msg: "The showtime not found ." });
         }
-
         const showtime = showtimeResult.rows[0];
         if (new Date(`${showtime.date.toISOString().split("T")[0]}T${showtime.start_time}`) < new Date()) {
             await client.query('ROLLBACK');
             client.release();
             return res.status(409).json({ msg: "Reservation time has expired ." });
         }
-
-        if (showtime.available_seats === 0) {
+        if (showtime.available_seats < seatsArray.length) {
             await client.query('ROLLBACK');
             client.release();
-            return res.status(409).json({ msg: "No available seats for this showtime." });
+            return res.status(409).json({ msg: "Not enough available seats for this showtime." });
         }
-
-        const selectReserveQuery = `
-            SELECT * 
-            FROM reservations
-            WHERE showtime_id = $1 AND seat_number = $2
-        `;
-        const reservationResult = await client.query(selectReserveQuery, [showtime_id, seat_number]);
-        if (reservationResult.rows.length > 0) {
-            await client.query('ROLLBACK');
-            client.release();
-            return res.status(409).json({ msg: "This seat is already booked." });
+        for (const seat_number of seatsArray) {
+            const selectReserveQuery = `
+                SELECT * 
+                FROM reservations
+                WHERE showtime_id = $1 AND seat_number = $2
+            `;
+            const reservationResult = await client.query(selectReserveQuery, [showtime_id, seat_number]);
+            if (reservationResult.rows.length > 0) {
+                await client.query('ROLLBACK');
+                client.release();
+                return res.status(409).json({ msg: `Seat ${seat_number} is already booked.` });
+            }
         }
-
-        const insertQuery = `
-            INSERT INTO reservations (user_id, showtime_id, seat_number)
-            VALUES ($1, $2, $3)
-        `;
-        await client.query(insertQuery, [user_id, showtime_id, seat_number]);
-
+        for (const seat_number of seatsArray) {
+            const insertQuery = `
+                INSERT INTO reservations (user_id, showtime_id, seat_number)
+                VALUES ($1, $2, $3)
+            `;
+            await client.query(insertQuery, [user_id, showtime_id, seat_number]);
+        }
         const updateQuery = `
             UPDATE showtimes
                 SET available_seats = $1
             WHERE id = $2
         `;
-        await client.query(updateQuery, [showtime.available_seats - 1, showtime_id]);
-
+        await client.query(updateQuery, [showtime.available_seats - seatsArray.length, showtime_id]);
         await client.query('COMMIT');
         client.release();
-
         try {
             await EmailSender(
                 userResult.rows[0].email,
                 showtime.title,
                 showtime.image_url,
-                seat_number,
+                seatsArray.join(", "),
                 showtime.date.toISOString().split("T")[0],
                 showtime.start_time
             );
@@ -141,7 +147,7 @@ export const saveReserve = async (req, res) => {
             console.error("Email failed explicitly in controller:", emailError);
         }
 
-        res.status(201).json({ msg: "Reservation was successful." });
+        res.status(201).json({ msg: "Reservations were successful." });
     } catch (err) {
         try {
             await client.query('ROLLBACK');
